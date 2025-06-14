@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, Table, Button, Input, Select, Tag, Space, Drawer, Form, DatePicker, Row, Col, Statistic } from 'antd';
 import { SearchOutlined, PlusOutlined, FilterOutlined, ExportOutlined, EyeOutlined } from '@ant-design/icons';
@@ -158,7 +157,7 @@ const Shipments = () => {
       title: 'Est. Delivery',
       dataIndex: 'estimatedDelivery',
       key: 'estimatedDelivery',
-      sorter: (a, b) => new Date(a.estimatedDelivery) - new Date(b.estimatedDelivery),
+      sorter: (a, b) => new Date(a.estimatedDelivery).getTime() - new Date(b.estimatedDelivery).getTime(),
     },
     {
       title: 'Actions',
@@ -264,7 +263,83 @@ const Shipments = () => {
         </div>
 
         <Table
-          columns={columns}
+          columns={[
+            {
+              title: 'Shipment ID',
+              dataIndex: 'id',
+              key: 'id',
+              sorter: (a, b) => a.id.localeCompare(b.id),
+            },
+            {
+              title: 'Origin',
+              dataIndex: 'origin',
+              key: 'origin',
+            },
+            {
+              title: 'Destination',
+              dataIndex: 'destination',
+              key: 'destination',
+            },
+            {
+              title: 'Status',
+              dataIndex: 'status',
+              key: 'status',
+              render: (status) => (
+                <Tag color={getStatusColor(status)}>{status}</Tag>
+              ),
+              filters: [
+                { text: 'Delivered', value: 'Delivered' },
+                { text: 'In Transit', value: 'In Transit' },
+                { text: 'Pending', value: 'Pending' },
+                { text: 'Delayed', value: 'Delayed' },
+              ],
+              onFilter: (value, record) => record.status === value,
+            },
+            {
+              title: 'Driver',
+              dataIndex: 'driver',
+              key: 'driver',
+            },
+            {
+              title: 'Vehicle',
+              dataIndex: 'vehicle',
+              key: 'vehicle',
+            },
+            {
+              title: 'Cargo',
+              dataIndex: 'cargo',
+              key: 'cargo',
+            },
+            {
+              title: 'Weight',
+              dataIndex: 'weight',
+              key: 'weight',
+            },
+            {
+              title: 'Est. Delivery',
+              dataIndex: 'estimatedDelivery',
+              key: 'estimatedDelivery',
+              sorter: (a, b) => new Date(a.estimatedDelivery).getTime() - new Date(b.estimatedDelivery).getTime(),
+            },
+            {
+              title: 'Actions',
+              key: 'actions',
+              render: (_, record) => (
+                <Space>
+                  <Button 
+                    type="link" 
+                    icon={<EyeOutlined />}
+                    onClick={() => {
+                      setSelectedShipment(record);
+                      setDrawerVisible(true);
+                    }}
+                  >
+                    View
+                  </Button>
+                </Space>
+              ),
+            },
+          ]}
           dataSource={filteredShipments}
           loading={isLoading}
           rowSelection={{

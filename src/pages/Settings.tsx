@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Card, Form, Input, Button, Switch, Select, Divider, Row, Col, Avatar, Upload, message, Tabs, Table, Modal } from 'antd';
+import { Card, Form, Input, Button, Switch, Select, Divider, Row, Col, Avatar, Upload, message, Tabs, Table, Modal, Space } from 'antd';
 import { UserOutlined, UploadOutlined, PlusOutlined, EditOutlined, DeleteOutlined, SettingOutlined, BellOutlined, SecurityScanOutlined, TeamOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -68,7 +67,7 @@ const Settings = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <div>
+        <Space>
           <Button 
             type="link" 
             icon={<EditOutlined />}
@@ -82,7 +81,7 @@ const Settings = () => {
           <Button type="link" danger icon={<DeleteOutlined />}>
             Delete
           </Button>
-        </div>
+        </Space>
       ),
     },
   ];
