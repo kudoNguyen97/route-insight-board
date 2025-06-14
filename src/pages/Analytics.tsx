@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, Row, Col, Statistic, Select, DatePicker, Space, Progress } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined, TruckOutlined, DollarOutlined, ShopOutlined, ClockCircleOutlined } from '@ant-design/icons';
@@ -136,7 +135,6 @@ const Analytics = () => {
               title="Avg Delivery Time"
               value={analytics?.overview.avgDeliveryTime || 0}
               precision={1}
-              suffix="days"
               prefix={<ClockCircleOutlined style={{ color: '#722ed1' }} />}
               suffix={
                 <span style={{ fontSize: 12, color: analytics?.overview.deliveryTimeChange < 0 ? '#52c41a' : '#ff4d4f' }}>

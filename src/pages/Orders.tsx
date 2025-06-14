@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
-import { Card, Table, Button, Input, Select, Tag, Space, Modal, Form, DatePicker, Row, Col, Statistic, Steps } from 'antd';
-import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { Card, Table, Button, Input, Select, Tag, Space, Drawer, Form, DatePicker, Row, Col, Statistic, Steps } from 'antd';
+import { SearchOutlined, PlusOutlined, FilterOutlined, ExportOutlined, EyeOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 
 const { Search } = Input;
@@ -81,7 +80,8 @@ const fetchOrders = async () => {
 };
 
 const Orders = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -176,7 +176,7 @@ const Orders = () => {
       title: 'Order Date',
       dataIndex: 'orderDate',
       key: 'orderDate',
-      sorter: (a, b) => new Date(a.orderDate) - new Date(b.orderDate),
+      sorter: (a, b) => new Date(a.orderDate).getTime() - new Date(b.orderDate).getTime(),
     },
     {
       title: 'Actions',
@@ -188,7 +188,7 @@ const Orders = () => {
             icon={<EyeOutlined />}
             onClick={() => {
               setSelectedOrder(record);
-              setModalVisible(true);
+              setDrawerVisible(true);
             }}
           >
             View
@@ -298,12 +298,11 @@ const Orders = () => {
         />
       </Card>
 
-      {/* Order Details Modal */}
-      <Modal
+      {/* Order Details Drawer */}
+      <Drawer
         title="Order Details"
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        footer={null}
+        open={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
         width={800}
       >
         {selectedOrder && (
@@ -343,7 +342,7 @@ const Orders = () => {
             </Row>
           </div>
         )}
-      </Modal>
+      </Drawer>
     </div>
   );
 };
