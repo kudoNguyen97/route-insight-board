@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Layout, Menu, Card, Row, Col, Statistic, Table, Progress, Badge, Space, Button } from 'antd';
+import { Layout, Menu, Card, Row, Col, Statistic, Progress, Space, Button } from 'antd';
 import {
   DashboardOutlined,
   TruckOutlined,
@@ -16,6 +16,10 @@ import { useQuery } from '@tanstack/react-query';
 import ShipmentChart from '../components/ShipmentChart';
 import FleetStatus from '../components/FleetStatus';
 import RecentOrders from '../components/RecentOrders';
+import Shipments from './Shipments';
+import Orders from './Orders';
+import Analytics from './Analytics';
+import Settings from './Settings';
 
 const { Header, Sider, Content } = Layout;
 
@@ -72,6 +76,117 @@ const Dashboard = () => {
     },
   ];
 
+  const renderContent = () => {
+    switch (selectedKey) {
+      case '2':
+        return <Shipments />;
+      case '3':
+        return <Orders />;
+      case '4':
+        return <Analytics />;
+      case '5':
+        return <Settings />;
+      default:
+        return (
+          <Content style={{ margin: '24px', background: '#f5f5f5' }}>
+            <Row gutter={[24, 24]}>
+              {/* Stats Cards */}
+              <Col xs={24} sm={12} lg={6}>
+                <Card>
+                  <Statistic
+                    title="Total Shipments"
+                    value={stats?.totalShipments || 0}
+                    loading={isLoading}
+                    prefix={<TruckOutlined style={{ color: '#1890ff' }} />}
+                    suffix={
+                      <span style={{ fontSize: 12, color: '#52c41a' }}>
+                        <ArrowUpOutlined /> {stats?.shipmentsChange || 0}%
+                      </span>
+                    }
+                  />
+                </Card>
+              </Col>
+              
+              <Col xs={24} sm={12} lg={6}>
+                <Card>
+                  <Statistic
+                    title="Active Vehicles"
+                    value={stats?.activeVehicles || 0}
+                    loading={isLoading}
+                    prefix={<TruckOutlined style={{ color: '#52c41a' }} />}
+                    suffix={
+                      <span style={{ fontSize: 12, color: '#ff4d4f' }}>
+                        <ArrowDownOutlined /> {Math.abs(stats?.vehiclesChange || 0)}%
+                      </span>
+                    }
+                  />
+                </Card>
+              </Col>
+              
+              <Col xs={24} sm={12} lg={6}>
+                <Card>
+                  <Statistic
+                    title="Pending Orders"
+                    value={stats?.pendingOrders || 0}
+                    loading={isLoading}
+                    prefix={<ShoppingCartOutlined style={{ color: '#faad14' }} />}
+                    suffix={
+                      <span style={{ fontSize: 12, color: '#52c41a' }}>
+                        <ArrowUpOutlined /> {stats?.ordersChange || 0}%
+                      </span>
+                    }
+                  />
+                </Card>
+              </Col>
+              
+              <Col xs={24} sm={12} lg={6}>
+                <Card>
+                  <Statistic
+                    title="Delivery Rate"
+                    value={stats?.deliveryRate || 0}
+                    precision={1}
+                    suffix="%"
+                    loading={isLoading}
+                    prefix={<BarChartOutlined style={{ color: '#52c41a' }} />}
+                  />
+                  <Progress 
+                    percent={stats?.deliveryRate || 0} 
+                    showInfo={false} 
+                    strokeColor="#52c41a"
+                    style={{ marginTop: 8 }}
+                  />
+                </Card>
+              </Col>
+            </Row>
+
+            <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+              {/* Charts Section */}
+              <Col xs={24} lg={16}>
+                <Card title="Shipments Overview" style={{ height: 400 }}>
+                  <ShipmentChart />
+                </Card>
+              </Col>
+              
+              <Col xs={24} lg={8}>
+                <Card title="Fleet Status" style={{ height: 400 }}>
+                  <FleetStatus />
+                </Card>
+              </Col>
+            </Row>
+
+            <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+              {/* Recent Orders Table */}
+              <Col span={24}>
+                <Card title="Recent Orders">
+                  <RecentOrders />
+                </Card>
+              </Col>
+            </Row>
+          </Content>
+        );
+    }
+  };
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider 
@@ -114,108 +229,16 @@ const Dashboard = () => {
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <h2 style={{ margin: 0, color: '#262626' }}>Logistics Dashboard</h2>
+          <h2 style={{ margin: 0, color: '#262626' }}>
+            {menuItems.find(item => item.key === selectedKey)?.label || 'Dashboard'}
+          </h2>
           <Space>
             <Button type="text" icon={<BellOutlined />} />
             <Button type="text" icon={<UserOutlined />} />
           </Space>
         </Header>
         
-        <Content style={{ margin: '24px', background: '#f5f5f5' }}>
-          <Row gutter={[24, 24]}>
-            {/* Stats Cards */}
-            <Col xs={24} sm={12} lg={6}>
-              <Card>
-                <Statistic
-                  title="Total Shipments"
-                  value={stats?.totalShipments || 0}
-                  loading={isLoading}
-                  prefix={<TruckOutlined style={{ color: '#1890ff' }} />}
-                  suffix={
-                    <span style={{ fontSize: 12, color: '#52c41a' }}>
-                      <ArrowUpOutlined /> {stats?.shipmentsChange || 0}%
-                    </span>
-                  }
-                />
-              </Card>
-            </Col>
-            
-            <Col xs={24} sm={12} lg={6}>
-              <Card>
-                <Statistic
-                  title="Active Vehicles"
-                  value={stats?.activeVehicles || 0}
-                  loading={isLoading}
-                  prefix={<TruckOutlined style={{ color: '#52c41a' }} />}
-                  suffix={
-                    <span style={{ fontSize: 12, color: '#ff4d4f' }}>
-                      <ArrowDownOutlined /> {Math.abs(stats?.vehiclesChange || 0)}%
-                    </span>
-                  }
-                />
-              </Card>
-            </Col>
-            
-            <Col xs={24} sm={12} lg={6}>
-              <Card>
-                <Statistic
-                  title="Pending Orders"
-                  value={stats?.pendingOrders || 0}
-                  loading={isLoading}
-                  prefix={<ShoppingCartOutlined style={{ color: '#faad14' }} />}
-                  suffix={
-                    <span style={{ fontSize: 12, color: '#52c41a' }}>
-                      <ArrowUpOutlined /> {stats?.ordersChange || 0}%
-                    </span>
-                  }
-                />
-              </Card>
-            </Col>
-            
-            <Col xs={24} sm={12} lg={6}>
-              <Card>
-                <Statistic
-                  title="Delivery Rate"
-                  value={stats?.deliveryRate || 0}
-                  precision={1}
-                  suffix="%"
-                  loading={isLoading}
-                  prefix={<BarChartOutlined style={{ color: '#52c41a' }} />}
-                />
-                <Progress 
-                  percent={stats?.deliveryRate || 0} 
-                  showInfo={false} 
-                  strokeColor="#52c41a"
-                  style={{ marginTop: 8 }}
-                />
-              </Card>
-            </Col>
-          </Row>
-
-          <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-            {/* Charts Section */}
-            <Col xs={24} lg={16}>
-              <Card title="Shipments Overview" style={{ height: 400 }}>
-                <ShipmentChart />
-              </Card>
-            </Col>
-            
-            <Col xs={24} lg={8}>
-              <Card title="Fleet Status" style={{ height: 400 }}>
-                <FleetStatus />
-              </Card>
-            </Col>
-          </Row>
-
-          <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-            {/* Recent Orders Table */}
-            <Col span={24}>
-              <Card title="Recent Orders">
-                <RecentOrders />
-              </Card>
-            </Col>
-          </Row>
-        </Content>
+        {renderContent()}
       </Layout>
     </Layout>
   );
